@@ -75,62 +75,7 @@ Polaris now supports multiple languages and ships with [many translations](https
 <AppProvider i18n={translations}>
 ```
 
-`translations` can be handled in different ways, depending on your needs.
-
-#### Statically
-
-You can specify translation file explicitly:
-
-```jsx
-import translations from '@shopify/polaris/locales/en.json';
-```
-
-This approach is suitable:
-
-- when project have only one specific locale
-- inside tests when you don't care which translations to use and need to pass any
-
-#### Dynamically
-
-What if your project supports different locales? Don't import all translation files as in example above - it's not optimal, you will end up with all translations in your bundle. What you need is to dynamically choose translations. There are 2 options.
-
-First option: you can copy/paste [translation files](https://github.com/Shopify/polaris-react/tree/master/locales) from Polaris into your project , into `translations` folder in the same place where your `AppProvider` is used. Then internationalization hook will work as usual and automatically will pick them up. You have freedom of controlling all translations, however, manual copy/pasting and updating is required.
-
-```jsx
-const [i18n] = useI18n();
-
-return (
-  <AppProvider linkComponent={ErrorLink} i18n={i18n.translations[0]}>
-    {children}
-  </AppProvider>
-);
-```
-
-Second option: translations are loaded from Polaris package dynamically based on locale. In this case you don't need to copy/paste anything, your code will use latest translations.
-
-```jsx
-import en from '@shopify/polaris/locales/en.json';
-
-export function AppProviderWithI18n({children}: Props) {
-  const [i18n] = useI18n({
-    id: 'Polaris',
-    fallback: en,
-    translations: async (locale) => {
-      const translationsLocale = locale && locale !== '' ? locale : 'en';
-      const dictionary = await import(
-        /* webpackChunkName: "Polaris-i18n-[request]" */ `@shopify/polaris/locales/${translationsLocale}.json`
-      );
-      return dictionary.default;
-    },
-  });
-
-  return (
-    <AppProvider i18n={i18n.translations[0]} linkComponent={Link}>
-      {children}
-    </AppProvider>
-  );
-}
-```
+You can see [here](https://github.com/Shopify/polaris-react/blob/master/src/components/AppProvider/README.md#using-translations) how to use translations.
 
 ### Autocomplete <a name="polaris-autocomplete"></a>
 
