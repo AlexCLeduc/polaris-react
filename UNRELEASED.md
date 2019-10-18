@@ -10,11 +10,12 @@ Use [the changelog guidelines](https://git.io/polaris-changelog-guidelines) to f
 
 ### Enhancements
 
-- Added `totalItemsCount` prop to `ResourceList` component ([2233](https://github.com/Shopify/polaris-react/pull/2233))
+- Added `totalItemsCount` prop to `ResourceList` ([#2233](https://github.com/Shopify/polaris-react/pull/2233))
+- Added a split variant to `Button` ([#2329](https://github.com/Shopify/polaris-react/pull/2329))
 
 ### Bug fixes
 
-- Fixed issue with `Stack` where a `Stack.Item` was not getting a minimum width ([2273](https://github.com/Shopify/polaris-react/pull/2273))
+- Fixed issue with `Stack` where a `Stack.Item` was not getting a minimum width ([#2273](https://github.com/Shopify/polaris-react/pull/2273))
 
 ### Documentation
 

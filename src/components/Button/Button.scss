@@ -8,11 +8,26 @@ $large-min-height: rem(44px);
 $large-vertical-padding: ($large-min-height - line-height(body) - rem(2px)) / 2;
 $spinner-size: rem(20px);
 
+$stacking-order: (
+  segment: 10,
+  focused: 20,
+);
+
 .Button {
   @include button-base;
 
   &.disabled {
     @include base-button-disabled;
+  }
+
+  &.connectedDisclosure {
+    z-index: z-index(segment, $stacking-order);
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+
+    &:focus {
+      z-index: z-index(focused, $stacking-order);
+    }
   }
 }
 
@@ -336,3 +351,20 @@ $spinner-size: rem(20px);
   }
 }
 // stylelint-enable selector-max-specificity
+
+.ConnectedDisclosureWrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+
+.ConnectedDisclosure {
+  z-index: z-index(segment, $stacking-order);
+  margin-left: -(border-width());
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+
+  &:focus {
+    z-index: z-index(focused, $stacking-order);
+  }
+}

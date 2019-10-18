@@ -243,6 +243,24 @@ Use for plain or monochrome buttons that could have a long length and should be 
 </Button>
 ```
 
+### Split button
+
+<!-- example-for: web -->
+
+Use when there is only one primary action but other related actions can be taken.
+
+```jsx
+<Button
+  primary
+  connectedDisclosure={{
+    accessibilityLabel: 'Other save actions',
+    actions: [{content: 'Save as draft'}],
+  }}
+>
+  Save
+</Button>
+```
+
 ### Disabled state
 
 Use for actions that aren’t currently available. The surrounding interface should make it clear why the button is disabled and what needs to be done to enable it.
