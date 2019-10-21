@@ -304,6 +304,10 @@ $partial-button-filled-pressed-box-shadow: inset 0 0 0 0 transparent,
     @include high-contrast-button-outline(none);
   }
 
+  &:focus > .Content {
+    @include high-contrast-button-outline;
+  }
+
   &:focus:not(:active) > .Content {
     @include focus-ring;
   }
@@ -313,13 +317,11 @@ $partial-button-filled-pressed-box-shadow: inset 0 0 0 0 transparent,
   }
 
   &.pressed:hover:not(.iconOnly) > .Content,
-  &.pressed:active:not(.iconOnly) > .Content,
-  &:focus:not(.iconOnly) > .Content {
+  &.pressed:active:not(.iconOnly) > .Content {
     @include plain-button-backdrop;
   }
 
   &:focus:not(.iconOnly) > .Content {
-    @include high-contrast-button-outline;
     @include plain-button-backdrop(
       var(--p-override-none, plain-button-background())
     );
