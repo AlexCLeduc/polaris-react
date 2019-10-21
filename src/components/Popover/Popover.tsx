@@ -1,9 +1,6 @@
 import React from 'react';
 import {createUniqueIDFactory} from '@shopify/javascript-utilities/other';
-import {
-  focusFirstFocusableNode,
-  findFirstFocusableNode,
-} from '@shopify/javascript-utilities/focus';
+import {findFirstFocusableNode} from '@shopify/javascript-utilities/focus';
 import {focusNextFocusableNode} from '../../utilities/focus';
 
 import {PreferredPosition, PreferredAlignment} from '../PositionedOverlay';
