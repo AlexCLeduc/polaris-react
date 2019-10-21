@@ -8,14 +8,31 @@
   background: none;
   border: 0;
   font-size: inherit;
-  color: color('blue');
+  color: var(--p-interactive-action, color('blue'));
   text-decoration: none;
   cursor: pointer;
 
-  &:hover,
-  &:active {
-    color: color('blue', 'dark');
+  &:hover {
+    color: var(--p-interactive-action-hovered, color('blue', 'dark'));
     text-decoration: underline;
+  }
+
+  &:focus {
+    text-decoration: var(--p-override-none, underline);
+    outline: none;
+  }
+
+  &:focus:not(:active) {
+    @include focus-ring;
+    @include plain-button-backdrop(
+      var(--p-override-none, plain-button-background())
+    );
+  }
+
+  &:active {
+    @include plain-button-backdrop(var(--p-neutral-action, none));
+    color: var(--p-interactive-action-pressed, color('blue', 'dark'));
+    text-decoration: var(--p-override-none, underline);
   }
 }
 
