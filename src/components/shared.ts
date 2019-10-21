@@ -33,6 +33,11 @@ export const themeProvider = {
   selector: '[data-polaris-theme-provider]',
 };
 
+export const portal = {
+  props: ['data-portal-id'],
+  selector: '[data-portal-id]',
+};
+
 export const DATA_ATTRIBUTE = {
   overlay,
   layer,

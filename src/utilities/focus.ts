@@ -1,7 +1,7 @@
-import {
-  findFirstFocusableNode,
-  FOCUSABLE_SELECTOR,
-} from '@shopify/javascript-utilities/focus';
+import {FOCUSABLE_SELECTOR} from '@shopify/javascript-utilities/focus';
+import {isElementInViewport} from './is-element-in-viewport';
+
+type Filter = (element: Element) => void;
 
 export function handleMouseUpByBlurring({
   currentTarget,
@@ -11,25 +11,28 @@ export function handleMouseUpByBlurring({
 
 export function nextFocusableNode(
   node: HTMLElement,
+  filter?: Filter,
 ): HTMLElement | Element | null {
-  let nextElement = node.nextElementSibling;
+  const allFocusableElements = [
+    ...document.querySelectorAll(FOCUSABLE_SELECTOR),
+  ];
+  const sliceLocation = allFocusableElements.indexOf(node) + 1;
+  const focusableElementsAfterNode = allFocusableElements.slice(sliceLocation);
 
-  while (nextElement) {
-    if (nextElement.matches(FOCUSABLE_SELECTOR)) return nextElement;
-
-    if (nextElement instanceof HTMLElement) {
-      const innerFocusableElement = findFirstFocusableNode(nextElement);
-      if (innerFocusableElement) return innerFocusableElement;
+  for (const focusableElement of focusableElementsAfterNode) {
+    if (
+      isElementInViewport(focusableElement) &&
+      (!filter || (filter && filter(focusableElement)))
+    ) {
+      return focusableElement;
     }
-
-    nextElement = nextElement.nextElementSibling;
   }
 
-  return nextElement;
+  return null;
 }
 
-export function focusNextFocusableNode(node: HTMLElement) {
-  const nextFocusable = nextFocusableNode(node);
+export function focusNextFocusableNode(node: HTMLElement, filter?: Filter) {
+  const nextFocusable = nextFocusableNode(node, filter);
   if (nextFocusable && nextFocusable instanceof HTMLElement) {
     nextFocusable.focus();
     return true;

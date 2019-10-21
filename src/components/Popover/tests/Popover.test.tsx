@@ -190,7 +190,9 @@ describe('<Popover />', () => {
     function PopoverTest() {
       return (
         <React.Fragment>
-          <Popover active activator={<div />} onClose={noop} />
+          <div>
+            <Popover active activator={<div />} onClose={noop} />
+          </div>
           <button id={id} />
         </React.Fragment>
       );

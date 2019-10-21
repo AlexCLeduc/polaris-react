@@ -44,6 +44,15 @@ describe('nextFocusableNode', () => {
 
     expect(nextFocusableNode(activator)).toBe(otherNodeNested);
   });
+
+  it('searches parent elements for focusable children', () => {
+    const {activator, parentsFocusableNode} = domSetup({
+      otherNodeTag: 'div',
+      parents: true,
+    });
+
+    expect(nextFocusableNode(activator)).toBe(parentsFocusableNode);
+  });
 });
 
 describe('focusNextFocusableNode', () => {
@@ -75,19 +84,25 @@ function domSetup(
     otherNodeTag?: string;
     otherNodeNestedTag?: string;
     nested?: boolean;
+    parents?: true;
   } = {},
 ) {
+  const div = 'div';
+  const button = 'button';
   const {
-    wrapperTag = 'div',
-    activatorTag = 'button',
-    otherNodeTag = 'button',
-    otherNodeNestedTag = 'button',
+    wrapperTag = div,
+    activatorTag = button,
+    otherNodeTag = button,
+    otherNodeNestedTag = button,
     nested,
+    parents,
   } = options;
   const wrapper = document.createElement(wrapperTag);
   const activator = document.createElement(activatorTag);
   const otherNode = document.createElement(otherNodeTag);
   let otherNodeNested = null;
+  let parentNode = null;
+  let parentsFocusableNode = null;
 
   if (nested) {
     otherNodeNested = document.createElement(otherNodeNestedTag);
@@ -96,5 +111,12 @@ function domSetup(
 
   wrapper.append(activator, otherNode);
 
-  return {wrapper, activator, otherNode, otherNodeNested};
+  if (parents) {
+    parentNode = document.createElement(div);
+    parentsFocusableNode = document.createElement(button);
+    parentNode.append(wrapper, parentsFocusableNode);
+  }
+
+  document.body.appendChild(parentNode || wrapper);
+  return {wrapper, activator, otherNode, otherNodeNested, parentsFocusableNode};
 }

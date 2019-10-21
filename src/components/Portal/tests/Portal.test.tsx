@@ -1,6 +1,7 @@
 import React from 'react';
 import {mountWithAppProvider} from 'test-utilities/legacy';
 import {Portal} from '../Portal';
+import {portal} from '../../shared';
 
 jest.mock('react-dom', () => ({
   ...require.requireActual('react-dom'),
@@ -33,7 +34,7 @@ describe('<Portal />', () => {
       const idPrefix = 'test';
       mountWithAppProvider(<Portal idPrefix={idPrefix} />);
       const [, portalNode] = lastSpyCall(createPortalSpy);
-      expect(portalNode.getAttribute('data-portal-id')).toMatch(
+      expect(portalNode.getAttribute(portal.props[0])).toMatch(
         new RegExp(`^${idPrefix}-portal`),
       );
     });
@@ -41,7 +42,7 @@ describe('<Portal />', () => {
     it('is ignored when not defined', () => {
       mountWithAppProvider(<Portal />);
       const [, portalNode] = lastSpyCall(createPortalSpy);
-      expect(portalNode.getAttribute('data-portal-id')).toMatch(/^portal/);
+      expect(portalNode.getAttribute(portal.props[0])).toMatch(/^portal/);
     });
   });
 

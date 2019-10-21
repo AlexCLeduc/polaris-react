@@ -8,6 +8,7 @@ import {focusNextFocusableNode} from '../../utilities/focus';
 
 import {PreferredPosition, PreferredAlignment} from '../PositionedOverlay';
 import {Portal} from '../Portal';
+import {portal} from '../shared';
 import {CloseSource, Pane, PopoverOverlay, Section} from './components';
 
 export {CloseSource};
@@ -127,17 +128,24 @@ export class Popover extends React.PureComponent<PopoverProps, State> {
   }
 
   private handleClose = (source: CloseSource) => {
+    const {activatorNode} = this.state;
     this.props.onClose(source);
 
     if (this.activatorContainer == null) {
       return;
     }
+
     if (
-      source === CloseSource.FocusOut ||
-      source === CloseSource.EscapeKeypress
+      (source === CloseSource.FocusOut ||
+        source === CloseSource.EscapeKeypress) &&
+      activatorNode
     ) {
-      if (!focusNextFocusableNode(this.activatorContainer)) {
-        focusFirstFocusableNode(this.activatorContainer, false);
+      const focusableActivator =
+        findFirstFocusableNode(activatorNode) ||
+        findFirstFocusableNode(this.activatorContainer) ||
+        this.activatorContainer;
+      if (!focusNextFocusableNode(focusableActivator, isInPortal)) {
+        focusableActivator.focus();
       }
     }
   };
@@ -152,4 +160,15 @@ export class Popover extends React.PureComponent<PopoverProps, State> {
     this.setState({activatorNode: node.firstElementChild as HTMLElement});
     this.activatorContainer = node;
   };
+}
+
+function isInPortal(element: Element) {
+  let parentElement = element.parentElement;
+
+  while (parentElement) {
+    if (parentElement.matches(portal.props[0])) return false;
+    parentElement = parentElement.parentElement;
+  }
+
+  return true;
 }
