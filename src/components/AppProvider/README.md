@@ -430,59 +430,49 @@ function AppProviderWithAllThemeKeysExample() {
 
 Translations are provided in the locales folder. When using Polaris, you are able to import translations from all languages supported by the core Shopify product and consume them through the `i18n` prop.
 
-```jsx
-ReactDOM.render(
-  <AppProvider i18n={translations}>{/* App content */}</AppProvider>,
-);
-```
-
-`translations` can be handled in different ways, depending on your needs.
-
-#### Statically
-
-You can specify translation file explicitly:
+At its simplest you can pass the json content from a locale file into `AppProvider`. This approach is suitable when a project has only one specific locale.
 
 ```jsx
+import AppProvider from '@shopify/polaris';
 // en.json is English. Replace with fr.json for French, etc
 import translations from '@shopify/polaris/locales/en.json';
-```
 
-This approach is suitable:
-
-- when project have only one specific locale
-- inside tests when you don't care which translations to use and need to pass any
-
-#### Dynamically
-
-What if your project supports different locales? Don't import all translation files as in example above - it's not optimal, you will end up with all translations in your bundle. What you need is to dynamically choose translations.
-
-In this example they are loaded from Polaris package dynamically based on locale you pass. It's based on `@shopify/react-i18n` [approach](https://github.com/Shopify/quilt/tree/master/packages/react-i18n#translations).
-
-```jsx
-import {useI18n} from '@shopify/react-i18n';
-import en from '@shopify/polaris/locales/en.json';
-
-export function AppProviderWithI18n({children}: Props) {
-  const [i18n] = useI18n({
-    id: 'Polaris',
-    fallback: en,
-    translations: async (locale) => {
-      const translationsLocale = locale && locale !== '' ? locale : 'en';
-      return (await import(
-        /* webpackChunkName: "Polaris-i18n-[request]" */ `@shopify/polaris/locales/${translationsLocale}.json`
-      )).default;
-    },
-  });
-
-  return (
-    <AppProvider i18n={i18n.translations.reverse()}>{children}</AppProvider>
-  );
+function App() {
+  return <AppProvider i18n={translations}>{/* App content */}</AppProvider>;
 }
 ```
 
-`useI18n` hook works like this: `i18n.translations[0]` will be whatever `translations` function is returning and `i18n.translations[1]` will be translations specified in `fallback`.
+Alternatively if your project supports multiple locales you can load them dynamically using [@shopify/react-i18n](https://github.com/Shopify/quilt/tree/master/packages/react-i18n#translation). This will ensure you only load the translations you need instead of potentially loading every set of translations even if you are not using them.
 
-`AppProvider` handles `i18n` prop in such way: if you pass an array with two elements, it will merge second element into first one, and will use resulting object for translation. So if we pass `i18n.translations` as is, then fallback translations (second element) will be merged over our preferred locale translations (first element), and localized translations will be lost (overriden with English). That's why we change array order with `reverse()`. This way, `AppProvider` will apply localized translations over fallback object resulting in full set of translations with fallback.
+```jsx
+import AppProvider from '@shopify/polaris';
+// en.json is English. Replace with fr.json for French, etc
+import translations from '@shopify/polaris/locales/en.json';
+import {useI18n} from '@shopify/react-i18n';
+
+function App() {
+  const [i18n] = useI18n({
+    id: 'Polaris',
+    fallback: translations,
+    translations(locale) {
+      return import(
+        /* webpackChunkName: "Polaris-i18n-[request]", webpackMode: "lazy-once" */ `@shopify/polaris/locales/${locale}.json`
+      ).then((dictionary) => dictionary && dictionary.default);
+    },
+  });
+
+  // i18n.translations is an array of translation dictionaries, where the first
+  // dictionary is the desired language, and the second is the fallback.
+  // AppProvider however expects that the first dictionary is the fallback
+  // and the second is the desired language. Thus we need to reverse the array
+  // to ensure the dictionaries are in the order desired by AppProvider
+  return (
+    <AppProvider i18n={i18n.translations.reverse()}>
+      {/* App content */}
+    </AppProvider>
+  );
+}
+```
 
 ---
 
